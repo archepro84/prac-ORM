@@ -8,7 +8,7 @@ async function bootstrap() {
 
   await useNestLifeCycle(app);
 
-  await app.listen(3000);
+  await app.listen(3032);
 }
 
 async function useNestLifeCycle(app: INestApplication): Promise<void> {

@@ -7,10 +7,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  userId Int @id @default(autoincrement())
+model Users {
+  userId    Int      @id @default(autoincrement())
+  name      String   @default("Anonymous") @db.VarChar(15)
+  email     String   @db.VarChar(50)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  posts     Posts[]    @relation("users_has_many_posts")
+  userInfos UserInfos? @relation("users_has_one_userInfos")
+
+  @@map("Users")
+}
+
+model UserInfos {
+  UserId      Int      @id @map("UserId")
+  phoneNumber String   @db.VarChar(20)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+
+  user Users @relation("users_has_one_userInfos", fields: [UserId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("UserInfos")
 }
 
 model Posts {
-  postId Int @id @default(autoincrement())
+  postId    Int      @id @default(autoincrement())
+  AuthorId  Int      @map("AuthorId")
+  title     String   @db.Text
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  author Users @relation("users_has_many_posts", fields: [AuthorId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("Posts")
 }
